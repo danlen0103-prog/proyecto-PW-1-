@@ -1,0 +1,8 @@
+package com.reporte.reporteciudadano.dto;
+
+import jakarta.validation.constraints.NotBlank;
+
+public record LoginRequest(
+        @NotBlank(message = "El correo es obligatorio") String correo,
+        @NotBlank(message = "La clave es obligatoria") String clave) {
+}

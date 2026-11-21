@@ -1,0 +1,9 @@
+com.reporte.reporteciudadano
+com.reporte.reporteciudadano.config
+com.reporte.reporteciudadano.controller
+com.reporte.reporteciudadano.dto
+com.reporte.reporteciudadano.exception
+com.reporte.reporteciudadano.model
+com.reporte.reporteciudadano.repository
+com.reporte.reporteciudadano.security
+com.reporte.reporteciudadano.service
