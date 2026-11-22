@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title data-i18n="panel.title">Panel de gestión · Reporta tu barrio</title>
+  <meta name="description" content="Casos ordenados por prioridad para gestionar su estado.">
+  <link rel="icon" href="data:,">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="css/estilos.css" rel="stylesheet">
+  <link href="css/pantallas.css" rel="stylesheet">
+</head>
+<body>
+  <div id="encabezado"></div>
+
+  <main id="contenido" tabindex="-1">
+    <div class="container my-4">
+      <h1 class="h2" data-i18n="panel.h1">Panel de gestión</h1>
+      <p class="text-body-secondary" data-i18n="panel.intro">Los casos aparecen de mayor a menor prioridad. La prioridad combina el tipo de problema, los apoyos de los vecinos y los días sin resolver.</p>
+
+      <div id="alerta" aria-live="polite"></div>
+
+      <section aria-labelledby="tFiltros" class="card card-body filtros mb-4">
+        <h2 id="tFiltros" class="visually-hidden" data-i18n="filtro.titulo">Filtros</h2>
+        <div class="row g-3 align-items-end">
+          <div class="col-12 col-md-4">
+            <label for="fTipo" class="form-label" data-i18n="filtro.tipo">Tipo de problema</label>
+            <select id="fTipo" class="form-select"><option value="" data-i18n="filtro.todosTipos">Todos los tipos</option></select>
+          </div>
+          <div class="col-12 col-md-4">
+            <label for="fBarrio" class="form-label" data-i18n="filtro.barrio">Barrio</label>
+            <select id="fBarrio" class="form-select"><option value="" data-i18n="filtro.todosBarrios">Todos los barrios</option></select>
+          </div>
+          <div class="col-12 col-md-3">
+            <label for="fEstado" class="form-label" data-i18n="filtro.estado">Estado</label>
+            <select id="fEstado" class="form-select">
+              <option value="" data-i18n="filtro.todosEstados">Todos los estados</option>
+              <option value="RECIBIDO" data-i18n="estado.RECIBIDO">Recibido</option>
+              <option value="EN_REVISION" data-i18n="estado.EN_REVISION">En revisión</option>
+              <option value="EN_PROCESO" data-i18n="estado.EN_PROCESO">En proceso</option>
+              <option value="RESUELTO" data-i18n="estado.RESUELTO">Resuelto</option>
+              <option value="RECHAZADO" data-i18n="estado.RECHAZADO">Rechazado</option>
+            </select>
+          </div>
+          <div class="col-12 col-md-1 d-grid">
+            <button id="btnLimpiar" type="button" class="btn btn-outline-secondary" data-i18n="filtro.limpiar">Limpiar</button>
+          </div>
+        </div>
+      </section>
+
+      <p id="contador" class="text-body-secondary" aria-live="polite"></p>
+
+        <div id="msgCargando" class="text-center py-5" role="status">
+          <div class="spinner-border text-primary" aria-hidden="true"></div>
+          <p class="mt-3 mb-0" data-i18n="comun.cargando">Cargando…</p>
+        </div>
+        <div id="msgVacio" class="alert alert-light border d-none" role="status" data-i18n="panel.vacio">No hay casos con esos filtros.</div>
+        <div id="msgError" class="alert alert-danger d-none" role="alert">
+          <strong data-i18n="comun.problema">Ocurrió un problema.</strong> <span class="detalle"></span>
+        </div>
+
+      <div id="zonaTabla" class="d-none">
+        <div class="table-responsive card tabla-tarjeta">
+          <table id="tabla" class="table table-hover align-middle mb-0">
+            <caption class="visually-hidden" data-i18n="panel.caption">Casos ordenados por prioridad</caption>
+            <thead>
+              <tr>
+                <th scope="col" data-i18n="comun.prioridad">Prioridad</th>
+                <th scope="col" data-i18n="th.caso">Caso</th>
+                <th scope="col" data-i18n="filtro.barrio">Barrio</th>
+                <th scope="col" data-i18n="filtro.estado">Estado</th>
+                <th scope="col" class="text-end" data-i18n="comun.apoyos">Apoyos</th>
+                <th scope="col" data-i18n="th.publicado">Publicado</th>
+                <th scope="col"><span class="visually-hidden" data-i18n="panel.acciones">Acciones</span></th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Ventana para cambiar el estado -->
+    <div class="modal fade" id="modalEstado" tabindex="-1" aria-labelledby="tModal" aria-hidden="true">
+      <div class="modal-dialog">
+        <form class="modal-content" id="formEstado" novalidate>
+          <div class="modal-header">
+            <h2 class="modal-title h5" id="tModal" data-i18n="panel.modalTitulo">Cambiar estado del caso</h2>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar" data-i18n-aria="comun.cerrar"></button>
+          </div>
+          <div class="modal-body">
+            <p id="modalResumen" class="text-body-secondary"></p>
+            <div id="alertaModal"></div>
+            <div class="mb-3">
+              <label for="nuevoEstado" class="form-label" data-i18n="panel.nuevoEstado">Nuevo estado</label>
+              <select id="nuevoEstado" class="form-select" required>
+                <option value="" data-i18n="panel.elige">Elige un estado…</option>
+                <option value="EN_REVISION" data-i18n="estado.EN_REVISION">En revisión</option>
+                <option value="EN_PROCESO" data-i18n="estado.EN_PROCESO">En proceso</option>
+                <option value="RESUELTO" data-i18n="estado.RESUELTO">Resuelto</option>
+                <option value="RECHAZADO" data-i18n="estado.RECHAZADO">Rechazado</option>
+              </select>
+              <div class="invalid-feedback" id="nuevoEstadoError"></div>
+            </div>
+            <div class="mb-1">
+              <label for="comentario" id="etiquetaComentario" class="form-label" data-i18n="panel.comentario">Comentario (opcional)</label>
+              <textarea id="comentario" class="form-control" rows="3" maxlength="500"></textarea>
+              <div class="invalid-feedback" id="comentarioError"></div>
+            </div>
+            <div id="bloqueFoto" class="mt-3 d-none">
+              <label for="fotoSolucion" class="form-label"><span data-i18n="panel.fotoSolucion">Foto de la solución</span> <span class="text-body-secondary" data-i18n="panel.fotoAyuda">(opcional, JPG o PNG, máximo 5 MB)</span></label>
+              <input id="fotoSolucion" type="file" class="form-control" accept="image/jpeg,image/png">
+              <div class="invalid-feedback" id="fotoSolucionError"></div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal" data-i18n="comun.cancelar">Cancelar</button>
+            <button id="btnGuardarEstado" type="submit" class="btn btn-primary" data-i18n="panel.guardar">Guardar cambio</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <footer id="pie" class="pie"></footer>
+
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/common.js"></script>
+  <script src="js/i18n.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/panel.js"></script>
+</body>
+</html>

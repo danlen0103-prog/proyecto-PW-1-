@@ -1,0 +1,39 @@
+
+.foto-detalle { border-radius: var(--radio); border: 1px solid #E1E6EC; aspect-ratio: 16 / 10; object-fit: cover; background: #E6EBF1; }
+#dMapa { position: relative; z-index: 0; height: 280px; border-radius: var(--radio); border: 1px solid #D5DCE4; overflow: hidden; }
+.descripcion { font-size: 1.05rem; white-space: pre-line; }
+.tarjeta-resumen { border-radius: var(--radio); border: 1px solid #E1E6EC; }
+.tarjeta-resumen .numero { font-size: 2rem; font-weight: 700; line-height: 1.1; color: var(--color-principal); }
+
+
+.linea-tiempo { position: relative; margin: 0; padding-left: 1.5rem; border-left: 3px solid #C9D3DE; }
+.linea-tiempo .paso { position: relative; padding: 0 0 1.25rem 1rem; }
+.linea-tiempo .paso::before {
+  content: ""; position: absolute; left: -1.5rem; top: .35rem; width: 14px; height: 14px; margin-left: -9px;
+  border-radius: 50%; background: var(--color-principal); border: 3px solid var(--color-fondo);
+}
+.paso-comentario { margin-top: .4rem; padding: .5rem .75rem; background: #fff; border-left: 4px solid var(--color-acento); border-radius: 6px; }
+
+
+.seccion-formulario { border-radius: var(--radio); border: 1px solid #E1E6EC; }
+#mapa.is-invalid { outline: 2px solid #DC3545; outline-offset: 2px; }
+.previa { max-width: 100%; max-height: 260px; border-radius: 10px; border: 1px solid #D5DCE4; }
+details summary { cursor: pointer; font-weight: 600; }
+
+
+.tabla-tarjeta { border-radius: var(--radio); border: 1px solid #E1E6EC; overflow: hidden; }
+.tabla-tarjeta thead th { background: #EEF2F7; white-space: nowrap; }
+.tabla-tarjeta tbody th a { font-weight: 600; text-decoration: none; }
+.tabla-tarjeta tbody th a:hover { text-decoration: underline; }
+
+
+.solo-impresion { display: none; }
+@media print {
+  #encabezado, .pie, .no-imprimir, .saltar { display: none !important; }
+  body { background: #fff; font-size: 11pt; }
+  .solo-impresion { display: block !important; font-weight: 600; margin-bottom: .25rem; }
+  .tarjeta-resumen, .tabla-tarjeta { box-shadow: none !important; border: 1px solid #999 !important; }
+  .tabla-tarjeta thead th { background: #eee !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  a { color: inherit; text-decoration: none; }
+  tr, .tarjeta-resumen { break-inside: avoid; }
+}
